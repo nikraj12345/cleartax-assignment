@@ -1,0 +1,26 @@
+.topbar {
+  padding: 1.75rem 2rem 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    padding: 1.25rem 1rem 0.75rem;
+  }
+  .title {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,128 @@
+:root {
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --bg: #f6f7f9;
+  --bg-elevated: #ffffff;
+  --bg-subtle: #eef0f4;
+  --border: #e2e5eb;
+  --border-strong: #c8cdd6;
+  --text: #0f1419;
+  --text-secondary: #5c6573;
+  --text-muted: #8b94a3;
+  --accent: #5e6ad2;
+  --accent-hover: #4f5abf;
+  --accent-subtle: #eef0ff;
+  --success: #0d8a5f;
+  --success-bg: #e8f7f1;
+  --warning: #b7791f;
+  --warning-bg: #fef6e7;
+  --danger: #c53b3b;
+  --danger-bg: #fdecec;
+  --sidebar: #0f1419;
+  --sidebar-text: #a0a8b5;
+  --sidebar-active: #ffffff;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 2px rgba(15, 20, 25, 0.06);
+  --shadow: 0 4px 20px rgba(15, 20, 25, 0.08);
+  --shadow-lg: 0 24px 48px rgba(15, 20, 25, 0.12);
+  --shell-width: 260px;
+  --gradient-page: radial-gradient(
+      ellipse 80% 50% at 0% -10%,
+      rgba(94, 106, 210, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 0%,
+      rgba(139, 92, 246, 0.1),
+      transparent 50%
+    ),
+    var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--gradient-page);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+::selection {
+  background: var(--accent-subtle);
+}
+
+.ui-btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.ui-btn--md {
+  padding: 0.55rem 1rem;
+  font-size: 13px;
+}
+
+.ui-btn--sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 12px;
+}
+
+.ui-btn--primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.ui-btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.ui-btn--secondary {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.ui-btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.ui-btn--danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.ui-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  student
+  support_agent
+  finance_reviewer
+  admin
+}
+
+enum TicketCategory {
+  course_content
+  video_app
+  payment
+  refund
+  login_account
+  other
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  resolved
+  escalated
+  closed
+}
+
+enum PaymentStatus {
+  initiated
+  pending
+  succeeded
+  failed
+  reversed
+  unknown
+}
+
+enum RefundStatus {
+  submitted
+  pending_approval
+  approved
+  rejected
+  processed
+}
+
+model User {
+  id           String          @id @default(uuid())
+  email        String          @unique
+  passwordHash String
+  role         Role
+  displayName  String
+  createdAt    DateTime        @default(now())
+  student      StudentProfile?
+  auditEvents  AuditEvent[]    @relation("AuditActor")
+  approvals    RefundApproval[]
+}
+
+model StudentProfile {
+  id          String       @id @default(uuid())
+  userId      String       @unique
+  user        User         @relation(fields: [userId], references: [id])
+  demoTag     String         @default("demo")
+  enrollments Enrollment[]
+  tickets     Ticket[]
+  conversations Conversation[]
+  payments    PaymentTransaction[]
+  refunds     RefundRequest[]
+  deviceReports DeviceReport[]
+}
+
+model Course {
+  id          String         @id @default(uuid())
+  name        String
+  slug        String         @unique
+  description String?
+  enrollments Enrollment[]
+  lessons     Lesson[]
+  schedules   ScheduleEvent[]
+  faqDocs     FaqDocument[]
+}
+
+model Enrollment {
+  id        String         @id @default(uuid())
+  studentId String
+  courseId  String
+  student   StudentProfile @relation(fields: [studentId], references: [id])
+  course    Course         @relation(fields: [courseId], references: [id])
+  enrolledAt DateTime      @default(now())
+
+  @@unique([studentId, courseId])
+}
+
+model Lesson {
+  id       String  @id @default(uuid())
+  courseId String
+  course   Course  @relation(fields: [courseId], references: [id])
+  title    String
+  sortOrder Int    @default(0)
+}
+
+model ScheduleEvent {
+  id          String   @id @default(uuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id])
+  title       String
+  startsAt    DateTime
+  description String?
+}
+
+model FaqDocument {
+  id        String  @id @default(uuid())
+  courseId  String?
+  course    Course? @relation(fields: [courseId], references: [id])
+  title     String
+  content   String
+  sourceKey String  @unique
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id])
+  channel   String
+  messages  Message[]
+  tickets   Ticket[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           String
+  content        String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+}
+
+model Ticket {
+  id             String         @id @default(uuid())
+  studentId      String
+  student        StudentProfile @relation(fields: [studentId], references: [id])
+  conversationId String?
+  conversation   Conversation?  @relation(fields: [conversationId], references: [id])
+  category       TicketCategory
+  status         TicketStatus   @default(open)
+  channel        String
+  aiResolved     Boolean        @default(false)
+  escalatedAt    DateTime?
+  summary        String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([studentId, status])
+}
+
+model TroubleshootingPlaybook {
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  title       String
+  androidOnly Boolean @default(false)
+  steps       Json
+  active      Boolean @default(true)
+}
+
+model DeviceReport {
+  id          String         @id @default(uuid())
+  studentId   String
+  student     StudentProfile @relation(fields: [studentId], references: [id])
+  platform    String
+  appVersion  String?
+  errorCode   String?
+  rawSymptoms String?
+  createdAt   DateTime       @default(now())
+}
+
+model PaymentTransaction {
+  id             String        @id @default(uuid())
+  studentId      String
+  student        StudentProfile @relation(fields: [studentId], references: [id])
+  providerRef    String        @unique
+  amountCents    Int
+  currency       String        @default("INR")
+  status         PaymentStatus @default(pending)
+  description    String?
+  idempotencyKey String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([studentId])
+}
+
+model RefundRequest {
+  id              String        @id @default(uuid())
+  studentId       String
+  student         StudentProfile @relation(fields: [studentId], references: [id])
+  paymentId       String
+  amountCents     Int
+  status          RefundStatus  @default(pending_approval)
+  reason          String
+  providerRefundRef String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  approval        RefundApproval?
+
+  @@index([status, createdAt])
+}
+
+model RefundApproval {
+  id              String        @id @default(uuid())
+  refundRequestId String        @unique
+  refundRequest   RefundRequest @relation(fields: [refundRequestId], references: [id])
+  reviewerId      String
+  reviewer        User          @relation(fields: [reviewerId], references: [id])
+  decision        String
+  reason          String?
+  decidedAt       DateTime      @default(now())
+}
+
+model KnowledgeSource {
+  id         String   @id @default(uuid())
+  title      String
+  sourceKey  String   @unique
+  version    Int      @default(1)
+  status     String   @default("published")
+  chunkCount Int      @default(0)
+  updatedAt  DateTime @updatedAt
+}
+
+model IngestionRun {
+  id        String   @id @default(uuid())
+  sourceKey String
+  status    String
+  chunkCount Int     @default(0)
+  error     String?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  channel   String
+  subject   String
+  body      String
+  sentAt    DateTime @default(now())
+}
+
+model AuditEvent {
+  id            String   @id @default(uuid())
+  actorUserId   String?
+  actor         User?    @relation("AuditActor", fields: [actorUserId], references: [id])
+  action        String
+  resourceType  String
+  resourceId    String?
+  correlationId String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([correlationId])
+}

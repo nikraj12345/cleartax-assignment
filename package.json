@@ -1,0 +1,27 @@
+{
+  "name": "brightpath-support-platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "db:migrate": "npm run prisma:migrate -w @brightpath/api",
+    "db:seed": "npm run seed -w @brightpath/api",
+    "rag:ingest": "npm run rag:ingest -w @brightpath/api",
+    "test:api-e2e": "npm run test -w @brightpath/api-e2e",
+    "stack:check": "sh scripts/check-stack.sh"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "npm@10.0.0"
+}

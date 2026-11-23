@@ -1,0 +1,115 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(94, 106, 210, 0.12), transparent 50%),
+    var(--bg);
+}
+
+.panel {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.25rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.brand {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.lead {
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem;
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: 2px solid var(--accent-subtle);
+  border-color: var(--accent);
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  margin: 0;
+}
+
+.submit {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.demo {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.demoTitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.demoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.demoBtn {
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.75rem;
+  background: var(--bg-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.demoBtn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.demoRole {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.demoEmail {
+  font-size: 11px;
+  color: var(--text-muted);
+}
